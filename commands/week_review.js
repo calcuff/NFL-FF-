@@ -1,19 +1,11 @@
-const lib = require('lib')({token: process.env.STDLIB_TOKEN});
-var request = require("request");
-var arraySort = require('array-sort');
-var all_players_Sorted;
-var num_players;
-var rank;
-var percentile;
-
 /**
-* /hello
+* /week_review
 *
-*   Basic "Hello World" command.
-*   All Commands use this template, simply create additional files with
-*   different names to add commands.
-*
-*   See https://api.slack.com/slash-commands for more details.
+* This program takes command line input for first name, last name as an argument variable.
+* It calls the NFL FF API to retrieve data, and filters all players in the NFL at the same position.
+* The file initiates calculations that will return what percentile the player is in based on their week points compared 
+* to others at the same position. The player's week points and what percentile they are in are then printed as output.
+* percentile player is in comapred with entire NFL.
 *
 * @param {string} user The user id of the user that invoked this command (name is usable as well)
 * @param {string} channel The channel id the command was executed in (name is usable as well)
@@ -22,6 +14,15 @@ var percentile;
 * @param {string} botToken The bot token for the Slack bot you have activated
 * @returns {object}
 */
+
+const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+var request = require("request");
+var arraySort = require('array-sort');
+var all_players_Sorted;
+var num_players;
+var rank;
+var percentile;
+
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
   var initializePromise = initialize();
 
@@ -51,8 +52,6 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
     text: `${text} week points ` + matches[0].weekPts +
            `\n${text} is in the ` + percentile.toPrecision(4) + ` percentile for week points for ` + matches[0].position,
     attachments: [
-      // You can customize your messages with attachments.
-      // See https://api.slack.com/docs/message-attachments for more info.
     ]
   });
   }, function(err) {

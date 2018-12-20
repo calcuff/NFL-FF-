@@ -1,21 +1,10 @@
-const lib = require('lib')({token: process.env.STDLIB_TOKEN});
-var request = require("request");
-var SeasonStats;
-var mean;
-var variance;
-var std_deviation;
-var z_score;
-var summation;
-var sum;
-
 /**
-* /hello
+* /season_analysis
 *
-*   Basic "Hello World" command.
-*   All Commands use this template, simply create additional files with
-*   different names to add commands.
-*
-*   See https://api.slack.com/slash-commands for more details.
+* Takes command line argument for a player's full first and last name. The program then calls the NFL FF API  
+* to retrieve player data. The program then identifies the position of entered player and filters all NFL players
+* and returns only those at desired position. It then computes a series of mathematical procedures to return how
+* many standard deviations the player's cumulative season points are away from the mean for all players at that position. 
 *
 * @param {string} user The user id of the user that invoked this command (name is usable as well)
 * @param {string} channel The channel id the command was executed in (name is usable as well)
@@ -25,6 +14,15 @@ var sum;
 * @returns {object}
 */
 
+const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+var request = require("request");
+var SeasonStats;
+var mean;
+var variance;
+var std_deviation;
+var z_score;
+var summation;
+var sum;
 
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
   var intializePromise = initialize();
@@ -65,15 +63,10 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
 
         //Z-score, i.e., how many standard deviations away from the mean
         z_score = (matches[0].seasonPts - mean) / std_deviation;
-    
-    //Prints generic player info and all available point stats
 
     callback(null, {
-      //text: `TESTING 1 mr. <@${user}>\nNumber of players found: ${num_players}\nYou player is ${text}`
       text: `${text} 's Season Points of ` + matches[0].seasonPts + ` are ` + z_score.toPrecision(4) + ` standard deviations away from the mean for ` + matches[0].position,
       attachments: [
-      // You can customize your messages with attachments.
-      // See https://api.slack.com/docs/message-attachments for more info.
     ]
   });
   }, function(err) {

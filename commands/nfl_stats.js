@@ -1,16 +1,9 @@
-const lib = require('lib')({token: process.env.STDLIB_TOKEN});
-var request = require("request");
-var game_stats;
-var player_stats;
-
 /**
-* /hello
+* /nfl_stats
 *
-*   Basic "Hello World" command.
-*   All Commands use this template, simply create additional files with
-*   different names to add commands.
-*
-*   See https://api.slack.com/slash-commands for more details.
+* This program takes command line argument for a player's full first and last name. It calls the NFL FF API to fetch all player data.
+* It then returns all generic player info and point stats. Using a series of cases based on the entered player's position, 
+* the program combines relevant game statistics into the desired output. 
 *
 * @param {string} user The user id of the user that invoked this command (name is usable as well)
 * @param {string} channel The channel id the command was executed in (name is usable as well)
@@ -20,6 +13,10 @@ var player_stats;
 * @returns {object}
 */
 
+const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+var request = require("request");
+var game_stats;
+var player_stats;
 
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
   var intializePromise = initialize();
@@ -91,7 +88,6 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
     //Prints generic player info and all available point stats
 
     callback(null, {
-      //text: `TESTING 1 mr. <@${user}>\nNumber of players found: ${num_players}\nYou player is ${text}`
       text: `Stats for ${text}\nPosition ` + matches[0].position + 
             `\n Team ` + matches[0].teamAbbr + 
             `\n Season Points ` + matches[0].seasonPts + 
@@ -100,8 +96,6 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
             `\n Week Projected Pts `+ matches[0].weekProjectedPts +
             `\n` + game_stats,
       attachments: [
-      // You can customize your messages with attachments.
-      // See https://api.slack.com/docs/message-attachments for more info.
     ]
   });
   }, function(err) {
