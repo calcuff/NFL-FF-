@@ -83,6 +83,10 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Forced Fumbles ' + matches[0].stats[48] +
           '\n Total Opponent Yards ' + matches[0].stats[62];
           break; 
+
+      default:
+         game_stats = 'Game stats only available for players at valid positions. Please choose a player at one of the following positions: QB, RB, WR, TE, K, or DEF.';
+         break;
     }
 
     //Prints generic player info and all available point stats
