@@ -1,3 +1,13 @@
+const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+var request = require("request");
+var SeasonStats;
+var mean;
+var variance;
+var std_deviation;
+var z_score;
+var summation;
+var sum;
+
 /**
 * /season_analysis
 *
@@ -14,15 +24,6 @@
 * @returns {object}
 */
 
-const lib = require('lib')({token: process.env.STDLIB_TOKEN});
-var request = require("request");
-var SeasonStats;
-var mean;
-var variance;
-var std_deviation;
-var z_score;
-var summation;
-var sum;
 
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
   var intializePromise = initialize();

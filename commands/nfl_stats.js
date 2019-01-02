@@ -1,3 +1,8 @@
+const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+var request = require("request");
+var game_stats;
+var player_stats;
+
 /**
 * /nfl_stats
 *
@@ -13,17 +18,13 @@
 * @returns {object}
 */
 
-const lib = require('lib')({token: process.env.STDLIB_TOKEN});
-var request = require("request");
-var game_stats;
-var player_stats;
-
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
   var intializePromise = initialize();
 
   intializePromise.then(function(result)  {
     SeasonStats = result;
 
+    
     num_players = SeasonStats.players.length;
 
     let matches = SeasonStats.players.filter(val => {
@@ -84,9 +85,9 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Total Opponent Yards ' + matches[0].stats[62];
           break; 
 
-      default:
+       /*default:
          game_stats = 'Game stats only available for players at valid positions. Please choose a player at one of the following positions: QB, RB, WR, TE, K, or DEF.';
-         break;
+         break;*/
     }
 
     //Prints generic player info and all available point stats

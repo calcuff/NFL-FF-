@@ -1,3 +1,8 @@
+const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+var request = require("request");
+var arraySort = require('array-sort'); 
+var top_players; 
+
 /**
 * /position_rankings
 *
@@ -13,11 +18,6 @@
 * @param {string} botToken The bot token for the Slack bot you have activated
 * @returns {object}
 */
-
-const lib = require('lib')({token: process.env.STDLIB_TOKEN});
-var request = require("request");
-var arraySort = require('array-sort'); 
-var top_players; 
 
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
     var initializePromise = initialize();

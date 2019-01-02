@@ -1,3 +1,11 @@
+const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+var request = require("request");
+var arraySort = require('array-sort');
+var all_players_Sorted;
+var num_players;
+var rank;
+var percentile;
+
 /**
 * /week_review
 *
@@ -15,13 +23,6 @@
 * @returns {object}
 */
 
-const lib = require('lib')({token: process.env.STDLIB_TOKEN});
-var request = require("request");
-var arraySort = require('array-sort');
-var all_players_Sorted;
-var num_players;
-var rank;
-var percentile;
 
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
   var initializePromise = initialize();
@@ -34,7 +35,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
         });
 
         let all_players = SeasonStats.players.filter(val => {
-            return val.position == matches[0].position;
+            return val.position === matches[0].position;
         })
 
         all_players_Sorted = arraySort(all_players, 'weekPts');
