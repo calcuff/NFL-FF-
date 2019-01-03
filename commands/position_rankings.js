@@ -23,10 +23,13 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
     var initializePromise = initialize();
     
     initializePromise.then(function(result) {
+      //Stores data pulled from API in SeasonStats as array
       SeasonStats = result;
 
+      //Declare as empty string so results are not carried over from runs
       top_players = "";
 
+      //Retrieves all players from SeasonStats of the same position as the user input (text)
       let matches = SeasonStats.players.filter(val => {
           return val.position === text;
       });
@@ -37,11 +40,13 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
       var pos_Sort_Right = pos_Sorted.reverse();
       //Slices players to get top 5
       var final_pos = pos_Sort_Right.slice(0,10);
-          
+    
+      //Builds string for numbers 1 through 10, next to player name and corresponding week projected points
       for (var i = 0; i < 10; i++){
         top_players += i+1 + '. ' + final_pos[i].name.padEnd(24, ' ') + final_pos[i].weekProjectedPts.toString() + "\n";
       }
 
+    //Outputs the top 10 players with their week projected points and heading
     callback(null, {
     text: `Player --- Top 10 ${text} --- Week Projected Points\n` + top_players,
     attachments: [
