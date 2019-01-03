@@ -29,42 +29,47 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
   var intializePromise = initialize();
 
   intializePromise.then(function(result)  {
+    //Stores data pulled from API in SeasonStats as array
     SeasonStats = result;
 
-
+    //Retrieves specific player from SeasonStats if name matches text input from user
     let matches = SeasonStats.players.filter(val => {
             return val.name === text;
         });
         
-        //Filters all players for only those that match the position of the desired player //
+        //Filters all players for only those that match the position of the desired player 
         let all_players = SeasonStats.players.filter(val => {
             return val.position == matches[0].position;
         })
 
-        //Gets number of players at the matching position//
+        //Gets number of players at the matching position
         var num_players = all_players.length;
         
-        //Calculated sum for all players at pos//
+        //Calculated sum of Season Points for all players at position
         sum = 0;
-        for (var i = 0; i < num_players - 1; i++) {
+        for (var i = 0; i < num_players; i++) {
             sum += (all_players[i].seasonPts);
         }
-        //Mean of seaspn pts
+
+        //Mean of season pts
         mean = sum / num_players;
         
         //Summation of the difference between each player's season pts and the mean, squared
         summation = 0;
-        for (var i = 0; i < num_players - 1; i++) {
+        for (var i = 0; i < num_players; i++) {
             summation += Math.pow((all_players[i].seasonPts - mean),2);
         }
+
         //Calculates variance for desired player
         variance = summation / (num_players);
+
         //Standard deviation for desired player
         std_deviation = Math.sqrt(variance);      
 
         //Z-score, i.e., how many standard deviations away from the mean
         z_score = (matches[0].seasonPts - mean) / std_deviation;
 
+    //Outputs player's season points, z-score, and position
     callback(null, {
       text: `${text} 's Season Points of ` + matches[0].seasonPts + ` are ` + z_score.toPrecision(4) + ` standard deviations away from the mean for ` + matches[0].position,
       attachments: [
