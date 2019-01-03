@@ -22,24 +22,27 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
   var intializePromise = initialize();
 
   intializePromise.then(function(result)  {
-    SeasonStats = result;
+    //Stores data pulled from API in SeasonStats as array
+    SeasonStats = result;                     
 
-    
-    num_players = SeasonStats.players.length;
-
+    //Retrieves specific player from SeasonStats if name matches text input from user
     let matches = SeasonStats.players.filter(val => {
       return val.name === text;
     });
 
-    player_stats = matches[0].position + 
+    //Stores player's individual fantasy point statistics in player_stats
+    player_stats = 'Position ' + matches[0].position + 
     '\n Team ' + matches[0].teamAbbr + 
     '\n Season Points ' + matches[0].seasonPts + 
     '\n Season Projected Pts ' + matches[0].seasonProjectedPts + 
     '\n Week Points ' + matches[0].weekPts + 
     '\n Week Projected Pts '+ matches[0].weekProjectedPts;
 
+
+    //Switch statement stores only position-relevant game statistics which correspond to individual elements of stat array (vary by position)
     switch(matches[0].position){
 
+      //QUARTERBACK
       case 'QB':        
           game_stats = 'Games played ' + matches[0].stats[1] +
           '\n Passing Attempts ' + matches[0].stats[2] + 
@@ -49,6 +52,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Interceptions ' + matches[0].stats[7];
           break;
 
+      //RUNNING BACK
       case 'RB':
           game_stats = 'Games Played ' + matches[0].stats[1] + 
           '\n Rushing Attempts ' + matches[0].stats[13] + 
@@ -59,6 +63,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Receiving TDs ' + matches[0].stats[22];
           break;
 
+      //KICKER
       case 'K':
           game_stats = 'Games Played ' + matches[0].stats[1] +
           '\n Extra Points Made ' + matches[0].stats[33] +
@@ -69,6 +74,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Missed Field Goals ' + matches[0].stats[44];
           break;
 
+      //WIDE RECEIVER, TIGHT END
       case 'WR':
       case 'TE':
           game_stats = 'Games Played ' + matches[0].stats[1] +
@@ -77,6 +83,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Receiving TDs ' + matches[0].stats[22];
           break;
 
+      //TEAM DEFENSE
       case 'DEF':
           game_stats = 'Games Played ' + matches[0].stats[1] +
           '\n Sacks ' + matches[0].stats[45] +
@@ -85,21 +92,14 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Total Opponent Yards ' + matches[0].stats[62];
           break; 
 
-      default:
+       default:
          game_stats = 'Game stats only available for players at valid positions. Please choose a player at one of the following positions: QB, RB, WR, TE, K, or DEF.';
          break;
     }
 
-    //Prints generic player info and all available point stats
-
+    //Outputs generic player info, all available point stats, and position-relevant game statistics
     callback(null, {
-      text: `Stats for ${text}\nPosition ` + matches[0].position + 
-            `\n Team ` + matches[0].teamAbbr + 
-            `\n Season Points ` + matches[0].seasonPts + 
-            `\n Season Projected Pts ` + matches[0].seasonProjectedPts + 
-            `\n Week Points ` + matches[0].weekPts + 
-            `\n Week Projected Pts `+ matches[0].weekProjectedPts +
-            `\n` + game_stats,
+      text: `Stats for ${text}\n` + player_stats + `\n` + game_stats,
       attachments: [
     ]
   });
