@@ -28,27 +28,35 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
   var initializePromise = initialize();
 
     initializePromise.then(function(result)   {
+        //Stores data pulled from API in SeasonStats as array
         SeasonStats = result;
     
+        //Retrieves specific player from SeasonStats if name matches text input from user
         let matches = SeasonStats.players.filter(val => {
             return val.name === text;
         });
 
+        //Filters all players for only those that match the position of the desired player 
         let all_players = SeasonStats.players.filter(val => {
             return val.position === matches[0].position;
         })
 
-        all_players_Sorted = arraySort(all_players, 'weekPts');
+        //Number of players at matching position
+        num_players = all_players.length;
 
-        num_players = all_players_Sorted.length;
+        //Sorts all players at position based on week points
+        all_players_Sorted = arraySort(all_players, 'weekPts');
     
+        //Finds the rank of desired player in the sorted data set
         for(i = 0; i < num_players; i++){
             if (all_players_Sorted[i].name == text) 
                 rank = i;
         }
         
+        //Calculates percentile of entered player
         percentile = rank / num_players * 100;
 
+  //Outputs entered player name, week points, what percentile they are in, and position
   callback(null, {
     text: `${text} week points ` + matches[0].weekPts +
            `\n${text} is in the ` + percentile.toPrecision(4) + ` percentile for week points for ` + matches[0].position,
