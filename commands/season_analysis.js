@@ -7,6 +7,7 @@ var std_deviation;
 var z_score;
 var summation;
 var sum;
+var output;
 
 /**
 * /season_analysis
@@ -36,29 +37,35 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
     let matches = SeasonStats.players.filter(val => {
             return val.name === text;
         });
+    
+    l1: while(true){
+            if (matches.length == 0){   //Error message if input does not match any data
+              output =  '\nIncorrect or missing player name. Please try re-entering or choose a different player.';
+              break l1;                 //Exits directly to output
+            }
         
         //Filters all players for only those that match the position of the desired player 
         let all_players = SeasonStats.players.filter(val => {
-            return val.position == matches[0].position;
+            return val.position === matches[0].position;
         })
 
-        //Gets number of players at the matching position
-        var num_players = all_players.length;
+          //Gets number of players at the matching position
+          var num_players = all_players.length;
         
-        //Calculated sum of Season Points for all players at position
-        sum = 0;
-        for (var i = 0; i < num_players; i++) {
+          //Calculated sum of Season Points for all players at position
+          sum = 0;
+          for (var i = 0; i < num_players; i++) {
             sum += (all_players[i].seasonPts);
-        }
+          }
 
-        //Mean of season pts
-        mean = sum / num_players;
+          //Mean of season pts
+          mean = sum / num_players;
         
-        //Summation of the difference between each player's season pts and the mean, squared
-        summation = 0;
-        for (var i = 0; i < num_players; i++) {
-            summation += Math.pow((all_players[i].seasonPts - mean),2);
-        }
+          //Summation of the difference between each player's season pts and the mean, squared
+          summation = 0;
+          for (var i = 0; i < num_players; i++) {
+              summation += Math.pow((all_players[i].seasonPts - mean),2);
+          }
 
         //Calculates variance for desired player
         variance = summation / (num_players);
@@ -68,10 +75,14 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
 
         //Z-score, i.e., how many standard deviations away from the mean
         z_score = (matches[0].seasonPts - mean) / std_deviation;
-
+        output = 's Season Points of ' + matches[0].seasonPts + ' are ' + z_score.toPrecision(4) + ' standard deviations away from the mean for ' + matches[0].position;
+        
+        //Exits infinite while loop
+        break l1;       
+      }
     //Outputs player's season points, z-score, and position
     callback(null, {
-      text: `${text} 's Season Points of ` + matches[0].seasonPts + ` are ` + z_score.toPrecision(4) + ` standard deviations away from the mean for ` + matches[0].position,
+      text: `${text}` + output,
       attachments: [
     ]
   });

@@ -33,17 +33,27 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
       let matches = SeasonStats.players.filter(val => {
           return val.position === text;
       });
+
+      l1: while(true){  
+        if (matches.length == 0){    //Error message if input does not match any data
+          top_players = 'Incorrect or missing positional abbreviation. Please try re-entering or choose a different position.';
+          break l1;                  //Exits directly to ouptut
+        }
         
-      //Sorts matches array based on week proj pts
-      var pos_Sorted = (arraySort(matches, 'weekProjectedPts'));
-      //Revereses to get values in descending order
-      var pos_Sort_Right = pos_Sorted.reverse();
-      //Slices players to get top 5
-      var final_pos = pos_Sort_Right.slice(0,10);
+        //Sorts matches array based on week proj pts
+        var pos_Sorted = (arraySort(matches, 'weekProjectedPts'));
+        //Revereses to get values in descending order
+        var pos_Sort_Right = pos_Sorted.reverse();
+        //Slices players to get top 5
+        var final_pos = pos_Sort_Right.slice(0,10);
     
-      //Builds string for numbers 1 through 10, next to player name and corresponding week projected points
-      for (var i = 0; i < 10; i++){
-        top_players += i+1 + '. ' + final_pos[i].name.padEnd(24, ' ') + final_pos[i].weekProjectedPts.toString() + "\n";
+        //Builds string for numbers 1 through 10, next to player name and corresponding week projected points
+        for (var i = 0; i < 10; i++){
+          top_players += i+1 + '. ' + final_pos[i].name.padEnd(24, ' ') + final_pos[i].weekProjectedPts.toString() + "\n";
+        }
+
+        //Exits infinite while loop
+        break l1;  
       }
 
     //Outputs the top 10 players with their week projected points and heading

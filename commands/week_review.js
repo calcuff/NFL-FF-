@@ -5,6 +5,7 @@ var all_players_Sorted;
 var num_players;
 var rank;
 var percentile;
+var output;
 
 /**
 * /week_review
@@ -36,30 +37,42 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
             return val.name === text;
         });
 
-        //Filters all players for only those that match the position of the desired player 
-        let all_players = SeasonStats.players.filter(val => {
-            return val.position === matches[0].position;
-        })
+        l1: while(true){
+            if (matches.length == 0){   //Error message if input does not match any data
+              output =  '\nIncorrect or missing player name. Please try re-entering or choose a different player.';
+              break l1;                 //Exits directly to output
+            }
 
-        //Number of players at matching position
-        num_players = all_players.length;
+            //Filters all players for only those that match the position of the desired player 
+            let all_players = SeasonStats.players.filter(val => {
+                return val.position === matches[0].position;
+            })
 
-        //Sorts all players at position based on week points
-        all_players_Sorted = arraySort(all_players, 'weekPts');
+            //Number of players at matching position
+            num_players = all_players.length;
+
+            //Sorts all players at position based on week points
+            all_players_Sorted = arraySort(all_players, 'weekPts');
     
-        //Finds the rank of desired player in the sorted data set
-        for(i = 0; i < num_players; i++){
-            if (all_players_Sorted[i].name == text) 
-                rank = i;
+            //Finds the rank of desired player in the sorted data set
+            for(i = 0; i < num_players; i++){
+                if (all_players_Sorted[i].name == text) 
+                    rank = i;
+            }   
+
+            //Calculates percentile of entered player
+            percentile = rank / num_players * 100;
+
+            //Formats output
+            output = 's week points '+ matches[0].weekPts + '\n' + matches[0].name + 'is in the ' + percentile.toPrecision(4) + ' percentile for week points for ' + matches[0].position;
+            
+            //Exits infinite while loop
+            break l1;   
         }
-        
-        //Calculates percentile of entered player
-        percentile = rank / num_players * 100;
 
   //Outputs entered player name, week points, what percentile they are in, and position
   callback(null, {
-    text: `${text} week points ` + matches[0].weekPts +
-           `\n${text} is in the ` + percentile.toPrecision(4) + ` percentile for week points for ` + matches[0].position,
+    text: `${text}` + output,
     attachments: [
     ]
   });

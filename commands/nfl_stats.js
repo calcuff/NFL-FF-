@@ -30,6 +30,13 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
       return val.name === text;
     });
 
+    l1: while(true){              
+      if (matches.length == 0){   //Error message if input does not match any data
+        player_stats = 'Incorrect or missing player name. Please try re-entering or choose a different player.';
+        game_stats = '';
+        break l1;                 //Exits directly to output
+      }
+
     //Stores player's individual fantasy point statistics in player_stats
     player_stats = 'Position ' + matches[0].position + 
     '\n Team ' + matches[0].teamAbbr + 
@@ -40,7 +47,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
 
 
     //Switch statement stores only position-relevant game statistics which correspond to individual elements of stat array (vary by position)
-    switch(matches[0].position){
+    l2: switch(matches[0].position){
 
       //QUARTERBACK
       case 'QB':        
@@ -50,7 +57,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Passing Yards ' + matches[0].stats[5] +
           '\n Passing TDs ' + matches[0].stats[6] +
           '\n Interceptions ' + matches[0].stats[7];
-          break;
+          break l2;
 
       //RUNNING BACK
       case 'RB':
@@ -61,7 +68,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Receptions ' + matches[0].stats[20] + 
           '\n Receiving Yards ' + matches[0].stats[21] + 
           '\n Receiving TDs ' + matches[0].stats[22];
-          break;
+          break l2;
 
       //KICKER
       case 'K':
@@ -72,7 +79,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Field Goalds Made 40-49 yds ' + matches[0].stats[38] +
           '\n Field Goalds Made 50+ yds ' + matches[0].stats[39] + 
           '\n Missed Field Goals ' + matches[0].stats[44];
-          break;
+          break l2;
 
       //WIDE RECEIVER, TIGHT END
       case 'WR':
@@ -81,7 +88,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Receptions ' + matches[0].stats[20] +
           '\n Receiving Yards ' + matches[0].stats[21] +
           '\n Receiving TDs ' + matches[0].stats[22];
-          break;
+          break l2;
 
       //TEAM DEFENSE
       case 'DEF':
@@ -90,12 +97,17 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
           '\n Interceptions ' + matches[0].stats[46] +
           '\n Forced Fumbles ' + matches[0].stats[48] +
           '\n Total Opponent Yards ' + matches[0].stats[62];
-          break; 
+          break l2; 
 
        default:
          game_stats = 'Game stats only available for players at valid positions. Please choose a player at one of the following positions: QB, RB, WR, TE, K, or DEF.';
-         break;
+         break l2;
     }
+
+    //Exits infinite while loop
+    break l1; 
+  }
+
 
     //Outputs generic player info, all available point stats, and position-relevant game statistics
     callback(null, {
